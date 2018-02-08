@@ -94,8 +94,9 @@ public class Tree<T extends Comparable<T>> {
         if(!contains(val)){
             return;
         }
+	//Save the lower elements.
         List<T> rearange=this.allBelow(val);
-        //Find the needet branch
+        //Find the needet value.
         while(current.getValue().compareTo(val)!=0){
             if(this.goLeft(current,val)){
                 if(current.getLeft()==null || current.getLeft().getValue().compareTo(val)==0){
@@ -136,7 +137,7 @@ public class Tree<T extends Comparable<T>> {
                 current=current.getRight();
             }
         }
-        //Delete the single matching element
+        //Delete the element, with all its childs.
         if(goLeft(current,val)){
             current.setLeft(new TreeNode<T>());
         }else{
@@ -146,7 +147,7 @@ public class Tree<T extends Comparable<T>> {
     public void Replace(T old,T nw){
         TreeNode<T> current=this.Root;
         //If it does not contains what we want to replace, exit.
-        if(!this.contains(old)){
+        if(!contains(old)){
             return;
         }
         //Else find it.
@@ -174,7 +175,6 @@ public class Tree<T extends Comparable<T>> {
         TreeNode<T> current=this.Root;
         TreeNode<T> last=current;
         while(!isLast(current,old)){
-            //current=chooseDirection(current,old);
             if(last.getValue().compareTo(old)==0){
                 last.setValue(nw);
             }
@@ -202,9 +202,6 @@ public class Tree<T extends Comparable<T>> {
     }
     //Checks if this is the last suitable node for this value.
     public boolean isLast(TreeNode<T> node,T val){
-        /*if(node.getValue()==null){
-            return true;
-        }*/
         if(val.compareTo(node.getValue())<=0){
             if(this.LeftIsLess){
                 return node.getLeft()==null;
@@ -235,8 +232,10 @@ public class Tree<T extends Comparable<T>> {
     }
     public List<T> allBelow(T val){
         List<T> result=new ArrayList<T>();
+	//We start from here.
         List<TreeNode<T>> last_depth=new ArrayList<TreeNode<T>>();
-        List<TreeNode<T>> current_depth=new ArrayList<TreeNode<T>>();
+        //And work here.
+	List<TreeNode<T>> current_depth=new ArrayList<TreeNode<T>>();
         TreeNode<T> current=this.Root;
         while(current.getValue().compareTo(val)!=0){
             if(this.goLeft(current,val)){
@@ -251,8 +250,10 @@ public class Tree<T extends Comparable<T>> {
                 current=current.getRight();
             }
         }
+	//This is the first occurence of the value.
         last_depth.add(current);
         while(!last_depth.isEmpty()){
+	    //We save it's current childs (1:Left,1:Right)
             for(TreeNode<T> node:last_depth){
                 if(node.getLeft()!=null){
                     current_depth.add(node.getLeft());
@@ -261,12 +262,15 @@ public class Tree<T extends Comparable<T>> {
                     current_depth.add(node.getRight());
                 }
             }
+	    //Make sure you do not save null's
             while(current_depth.contains(null)){
                 current_depth.remove(null);
             }
             last_depth.clear();
+	    //Prepare for finding the childs of the childs, in the next iteration.
             last_depth.addAll(current_depth);
             current_depth.clear();
+	    //Add found childs to the result list.
             for(TreeNode<T> node:last_depth){
                 if(node.getValue()!=null){
                     result.add(node.getValue());
