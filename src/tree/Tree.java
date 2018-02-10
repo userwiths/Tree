@@ -223,6 +223,7 @@ public class Tree<T extends Comparable<T>> {
             }
         }
     }
+    //Contains element with the given value
     public boolean contains(T val){
         TreeNode<T> current=this.Root;
         while(!isLast(current,val)){
@@ -237,6 +238,7 @@ public class Tree<T extends Comparable<T>> {
         }
         return false;
     }
+    //Contains a branch with the exact same values as in the given one.
     public boolean contains(TreeNode<T> branch){
         Tree<T> n_tree=new Tree<T>(branch);
         if(!this.contains(branch.getValue())){
@@ -244,6 +246,7 @@ public class Tree<T extends Comparable<T>> {
         }
         return allBelow(branch.getValue()).containsAll(n_tree.allBelow(branch.getValue()));
     }
+    //Get all values in the tree, placed below the given one.
     public List<T> allBelow(T val){
         List<T> result=new ArrayList<T>();
         List<TreeNode<T>> last_depth=new ArrayList<TreeNode<T>>();
@@ -286,12 +289,14 @@ public class Tree<T extends Comparable<T>> {
         }
         return result;
     }
+    //Get all elements.
     public List<T> allElements(){
         List<T> result=new ArrayList<T>();
         result.add(this.Root.getValue());
         result.addAll(allBelow(this.Root.getValue()));
         return result;
     }
+    //How much actions(depth) is needet to reach the element.
     public int depthOf(T val){
         int result=0;
         TreeNode<T> current=this.Root;
@@ -313,6 +318,7 @@ public class Tree<T extends Comparable<T>> {
         }
         return result==0?-1:result;
     }
+    //Max depth of tree.
     public int maxDepth(){
         int result=0;
         List<TreeNode<T>> last_depth=new ArrayList<TreeNode<T>>();
@@ -338,9 +344,38 @@ public class Tree<T extends Comparable<T>> {
         }
         return result;
     }
+    //Minimum Depth.
     public int minDepth(){
         int result=0;
-        
+        List<TreeNode<T>> last_depth=new ArrayList<TreeNode<T>>();
+        List<TreeNode<T>> current_depth=new ArrayList<TreeNode<T>>();
+        last_depth.add(this.Root);
+        while(!last_depth.isEmpty()){
+            result++;
+            for(TreeNode<T> node:last_depth){
+                if(node.getLeft()!=null){
+                    if(node.getLeft().getValue()!=null){
+                        current_depth.add(node.getLeft());
+                    }else{
+                        return result;
+                    }
+                }else{
+                    return result;
+                }
+                if(node.getRight()!=null){
+                    if(node.getRight().getValue()!=null){
+                        current_depth.add(node.getRight());
+                    }else{
+                        return result;
+                    }
+                }else{
+                    return result;
+                }
+            }
+            last_depth.clear();
+            last_depth.addAll(current_depth);
+            current_depth.clear();
+        }       
         return result;
     }
     public int averageDepth(){
@@ -431,5 +466,6 @@ public class Tree<T extends Comparable<T>> {
         System.out.println("Number of elements: "+tree.allElements().size()
                             +"\nItems: "+tree.allElements());
         
+        System.out.println("Max Depth: "+tree.maxDepth()+"\nMin Depth: "+tree.minDepth());
     }  
 }
