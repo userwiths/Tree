@@ -296,6 +296,43 @@ public class Tree<T extends Comparable<T>> {
         result.addAll(allBelow(this.Root.getValue()));
         return result;
     }
+    //Get the branch starting with the current vlue.
+    public TreeNode<T> getBranch(T val){
+        TreeNode<T> current=this.Root;
+        if(!contains(val)){
+            return null;
+        }
+        while(!isLast(current,val)){
+            if(current.getValue().compareTo(val)==0){
+                return current;
+            }
+            if(goLeft(current,val)){
+                current=current.getLeft();
+            }else{
+                current=current.getRight();
+            }
+        }
+        return null;
+    }
+    //Get Branch which has the exact same values as the given one.
+    public TreeNode<T> getBranch(TreeNode<T> branch){
+        TreeNode<T> current=this.Root;
+        Tree<T> n_tree=new Tree(branch);
+        if(!contains(branch)){
+            return null;
+        }
+        while(!isLast(current,branch.getValue())){
+            if(allBelow(branch.getValue()).containsAll(n_tree.allBelow(branch.getValue()))){
+                return current;
+            }
+            if(goLeft(current,branch.getValue())){
+                current=current.getLeft();
+            }else{
+                current=current.getRight();
+            }
+        }
+        return null;
+    }
     //How much actions(depth) is needet to reach the element.
     public int depthOf(T val){
         int result=0;
@@ -383,16 +420,14 @@ public class Tree<T extends Comparable<T>> {
         
         return result;
     }
+    //Get Parent node for the given value.
     public TreeNode<T> getParent(T val){
         TreeNode<T> last=this.Root;
         TreeNode<T> current=this.Root;
         if(!contains(val)){
             return null;
         }
-        while(!isLast(current,val)){
-            if(current.getValue().compareTo(val)==0){
-                return last;
-            }
+        while(current.getValue().compareTo(val)!=0){
             last=current;
             if(goLeft(current,val)){
                 current=current.getLeft();
@@ -400,8 +435,9 @@ public class Tree<T extends Comparable<T>> {
                 current=current.getRight();
             }
         }
-        return null;
+        return last;
     }
+    //Get parent node for current node.
     public TreeNode<T> getParent(TreeNode<T> val){
         TreeNode<T> last=this.Root;
         TreeNode<T> current=this.Root;
@@ -455,6 +491,7 @@ public class Tree<T extends Comparable<T>> {
     
     public static void main(String[] args) {
         Random rnd=new Random();
+        int temp=0;
         Tree<Integer> tree=new Tree<Integer>(22);
         
         //Populate with random integers.
@@ -467,5 +504,14 @@ public class Tree<T extends Comparable<T>> {
                             +"\nItems: "+tree.allElements());
         
         System.out.println("Max Depth: "+tree.maxDepth()+"\nMin Depth: "+tree.minDepth());
+        
+        do{
+            temp=rnd.nextInt(100);
+        }while(!tree.contains(temp));
+        
+        System.out.println(tree.allBelow(temp));
+        System.out.println(tree.getParent(temp).getValue());
+        Tree<Integer> branch=new Tree<Integer>(tree.getBranch(temp));
+        System.out.println(branch);
     }  
 }
