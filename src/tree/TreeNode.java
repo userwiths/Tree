@@ -42,12 +42,6 @@ public class TreeNode<T extends Comparable<T>> {
     }
     public void setRight(T right) {
         this.Right = new TreeNode(right);
-    }    
-
-   /* @Override
-    public String toString() {
-        return this.Value.toString();
-    }*/
-    
+    }   
     
 }
